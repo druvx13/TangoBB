@@ -192,7 +192,11 @@ class Tango_Forum
                     $latest = (strlen($p['post_title']) > 24) ? '<a href="' . SITE_URL . '/thread.php/' . $p['title_friendly'] . '.' . $p['id'] . $page . '#post-' . $post['id'] . '" title="' . $p['post_title'] . '">' . substr($p['post_title'], 0, 24) . '...' . '</a>' : '<a href="' . SITE_URL . '/thread.php/' . $p['title_friendly'] . '.' . $p['id'] . $page . '#post-' . $post['id'] . '">' . $p['post_title'] . '</a>';
                 }
 
-                $post_time = simplify_time($post['post_time'], @$TANGO->sess->data['location']);
+                $user_location = null;
+                if (isset($TANGO->sess, $TANGO->sess->data, $TANGO->sess->data['location'])) {
+                    $user_location = $TANGO->sess->data['location'];
+                }
+                $post_time = simplify_time($post['post_time'], $user_location);
                 /** Output */
                 $return .= $TANGO->tpl->entity(
                     'forum_listings_node_latest',
@@ -242,7 +246,11 @@ class Tango_Forum
                     $latest = (strlen($p['post_title']) > 24) ? '<a href="' . SITE_URL . '/thread.php/' . $p['title_friendly'] . '.' . $p['id'] . $page . '#post-' . $post['id'] . '" title="' . $p['post_title'] . '">' . substr($p['post_title'], 0, 24) . '...' . '</a>' : '<a href="' . SITE_URL . '/thread.php/' . $p['title_friendly'] . '.' . $p['id'] . $page . '#post-' . $post['id'] . '">' . $p['post_title'] . '</a>';
                 }
 
-                $post_time = simplify_time($post['post_time'], @$TANGO->sess->data['location']);
+                $user_location = null;
+                if (isset($TANGO->sess, $TANGO->sess->data, $TANGO->sess->data['location'])) {
+                    $user_location = $TANGO->sess->data['location'];
+                }
+                $post_time = simplify_time($post['post_time'], $user_location);
                 /** Output */
                 $return .= $TANGO->tpl->entity(
                     'forum_listings_node_sub_forums_latest',

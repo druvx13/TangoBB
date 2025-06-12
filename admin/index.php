@@ -15,7 +15,18 @@ echo '<div class="col-md-12">
         </div>
       </div>';
 
-$versions = @file_get_contents('http://api.codetana.com/iko/version_list.php');
+// Attempt to fetch version list
+$versions_url = 'http://api.codetana.com/iko/version_list.php';
+$versions_content = file_get_contents($versions_url);
+
+if ($versions_content === false) {
+    // Failed to fetch version list. Log this or handle as appropriate.
+    // error_log("Admin Dashboard: Failed to fetch version list from " . $versions_url);
+    $versions = ''; // Mimic behavior of @ suppressing error leading to empty $versions
+} else {
+    $versions = $versions_content;
+}
+
 if ($versions != '') {
     $versionList = explode("|", $versions);
     foreach ($versionList as $version) {
@@ -26,7 +37,7 @@ if ($versions != '') {
 }
 echo $ADMIN->box(
     'Dashboard',
-    'This forum is powered by TangoBB <strong>' . TANGOBB_VERSION . '</strong>.' . @$alert,
+    'This forum is powered by TangoBB <strong>' . TANGOBB_VERSION . '</strong>.' . (isset($alert) ? $alert : ''),
     '<table class="table">
          <thead>
            <tr>

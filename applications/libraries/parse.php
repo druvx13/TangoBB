@@ -195,7 +195,7 @@ class Library_Parse
     {
         $valid_url = false;
 
-        if (filter_var($url, FILTER_VALIDATE_URL, FILTER_FLAG_SCHEME_REQUIRED | FILTER_FLAG_HOST_REQUIRED)) {
+        if (filter_var($url, FILTER_VALIDATE_URL)) {
             $parsed_url = parse_url($url);
             $valid_url = (boolean)preg_match('#\\Ahttps?\\z#ui', $parsed_url['scheme']);
         }

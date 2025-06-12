@@ -143,12 +143,14 @@ class Tango_Admin
 
             if ($thisFileName == 'upgrade.php' && $update === true) {
                 $file_message[$i] = '<li>' . $thisFileName . ': ';
-                if (@file_put_contents('updates/' . $thisFileName, $content) === false) {
+                if (file_put_contents('updates/' . $thisFileName, $content) === false) {
+                    error_log('[Tango_Admin::zip_extract] Failed to write file during update: updates/' . $thisFileName);
                     $error[$i] = 'File could not be handled: ' . $thisFileName . '<br />';
                 }
             } else {
                 $file_message[$i] = '<li>' . $thisFileName . ': ';
-                if (@file_put_contents('../' . $thisFileName, $content) === false) {
+                if (file_put_contents('../' . $thisFileName, $content) === false) {
+                    error_log('[Tango_Admin::zip_extract] Failed to write file: ../' . $thisFileName);
                     $error[$i] = '#2 File could not be handled: ' . $thisFileName . '<br />';
                 }
             }
@@ -161,7 +163,7 @@ class Tango_Admin
             $output = '<ul>';
             foreach ($file_message as $i => $message) {
                 $output .= $message;
-                if (@$error[$i] == '') {
+                if (empty($error[$i])) { // Check if error is not set or empty
                     $output .= '-> Done';
                 } else {
                     $output .= $error[$i];
@@ -177,7 +179,10 @@ class Tango_Admin
     public function download($link, $update = false)
     {
         $file_name = basename($link);
-        if (@fopen($link, 'r')) {
+        $handle = fopen($link, 'r');
+        if ($handle) {
+            // Close the handle as it was primarily for checking readability before curl download.
+            fclose($handle);
             if ($update === true && !is_file('updates/' . $file_name)) {
                 $file = curl_init($link);
                 if (!is_dir('updates/')) mkdir('updates/');
@@ -197,6 +202,7 @@ class Tango_Admin
             }
             return $file_name;
         } else {
+            error_log('[Tango_Admin::download] Failed to open remote link for reading: ' . $link);
             return false;
         }
     }

@@ -138,24 +138,37 @@ class Tango_Core
     public function lang($string, $find = array(), $replace = array()) {
         global $LANG;
         $params = explode('.', $string);
-        $build  = '';
-        foreach( $params as $each ) {
-            $build .= '[\'' . $each . '\']';
+
+        $current = $LANG;
+        foreach ($params as $param) {
+            if (is_array($current) && isset($current[$param])) {
+                $current = $current[$param];
+            } else {
+                // Key path not found in $LANG array
+                return false; // Or handle error as appropriate
+            }
         }
-        $build = '$LANG' . $build . ';';
-        @eval('$build = ' . $build . ';');
-        if( empty($build) or !$build ) {
+        $build = $current;
+
+        if ($build === false || $build === null) { // Check if path was invalid or value is explicitly false/null
+             // Consider if an empty string is a valid translation or should also return false.
+             // For now, if $build is empty string, it might be a valid empty translation.
             return false;
         } else {
-
             $f = array();
-            foreach( $find as $par ) {
+            foreach ($find as $par) {
                 $f[] = '%' . $par . '%';
             }
-
-            $return = str_replace($f, $replace, $build);
+            // Ensure $build is a string before str_replace if it could be an array from $LANG
+            if (!is_scalar($build)) {
+                // Non-scalar value found at the end of the path, this might be an error
+                // or the language string itself is an array/object.
+                // Depending on expected behavior, either return false or handle appropriately.
+                // For now, assuming translations are scalar (strings).
+                return false;
+            }
+            $return = str_replace($f, $replace, (string)$build);
             return $return;
-
         }
     }
 
