@@ -303,9 +303,11 @@ if ($PGET->g('node')) {
         );
         $content .= $TANGO->tpl->entity(
             'thread_options',
-            array(),
             array(
-
+                'misc'
+            ),
+            array(
+                $TANGO->hook->apply_filters('thread_options_misc', '')
             )
         );
 

@@ -16,9 +16,10 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 </script>';
 
-// We use addEntParam because new.php uses the thread_options entity which has the %misc% placeholder.
-// thread_options is called without parameters in new.php, so it falls back to ent_params.
-$TANGO->tpl->addEntParam('misc', $attachment_input);
+// Filter to inject the attachment input into thread options
+$TANGO->hook->add_filter('thread_options_misc', function($content) use ($attachment_input) {
+    return $content . $attachment_input;
+});
 
 
 // Hook to handle file upload after thread creation
