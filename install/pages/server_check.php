@@ -2,7 +2,7 @@
     Checking your server.
 </div>
 <?php
-if (version_compare(PHP_VERSION, '5.3.7', '<')) {
+if (version_compare(PHP_VERSION, '8.0.0', '<')) {
     $check['php'] = false;
     $check['php_version'] = PHP_VERSION;
     $check['php_css'] = 'danger';
@@ -89,7 +89,7 @@ if ($check['php'] === true && $check['chmods'] === true) {
     </tr>
     <tr>
         <td>PHP Version</td>
-        <td><span class="label label-default">&ge; 5.3.7</span></td>
+        <td><span class="label label-default">&ge; 8.0.0</span></td>
         <td><span class="label label-<?php echo $check['php_css']; ?>"><?php echo $check['php_version']; ?></span></td>
     </tr>
     <tr>

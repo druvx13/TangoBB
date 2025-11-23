@@ -589,7 +589,7 @@ class SimpleMail
             '>' => ']',
         );
 
-        return trim(strtr(filter_var($name, FILTER_SANITIZE_STRING), $rule));
+        return trim(strtr(strip_tags($name), $rule));
     }
 
     /**
@@ -607,7 +607,7 @@ class SimpleMail
             "\n" => '',
             "\t" => '');
 
-        return strtr(filter_var($data, FILTER_SANITIZE_STRING), $rule);
+        return strtr(strip_tags($data), $rule);
     }
 }
 

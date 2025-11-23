@@ -72,7 +72,8 @@ class MysqliDB
         $mysqli_driver = new mysqli_driver();
         $mysqli_driver->report_mode = MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT;
 
-        $fp = @fsockopen($host, MYSQL_PORT);
+        $port = defined('MYSQL_PORT') ? MYSQL_PORT : 3306;
+        $fp = @fsockopen($host, $port);
 
         if (is_resource($fp)) {
             $this->_mysqli = new mysqli($host, $username, $password, $db);
@@ -135,7 +136,7 @@ class MysqliDB
     public function rawQuery($query, $bindParams = NULL)
     {
         $query = str_replace('{prefix}', $this->_prefix, $query);
-        $this->_query = filter_var($query, FILTER_SANITIZE_STRING);
+        $this->_query = $query;
         $stmt = $this->_prepareQuery();
 
         if (gettype($bindParams) === 'array') {
@@ -166,7 +167,7 @@ class MysqliDB
     public function query($query, $numRows = NULL)
     {
         $query = str_replace('{prefix}', $this->_prefix, $query);
-        $this->_query = filter_var($query, FILTER_SANITIZE_STRING);
+        $this->_query = $query;
         $stmt = $this->_buildQuery($numRows);
         $stmt->execute();
         $this->reset();
@@ -393,7 +394,7 @@ class MysqliDB
                     $this->_paramTypeList .= $this->_determineType($val);
                 }
 
-                $this->_query .= '(' . implode($keys, ', ') . ')';
+                $this->_query .= '(' . implode(', ', $keys) . ')';
                 $this->_query .= ' VALUES(';
                 while ($num !== 0) {
                     ($num !== 1) ? $this->_query .= '?, ' : $this->_query .= '?)';

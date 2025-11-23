@@ -138,13 +138,17 @@ class Tango_Core
     public function lang($string, $find = array(), $replace = array()) {
         global $LANG;
         $params = explode('.', $string);
-        $build  = '';
-        foreach( $params as $each ) {
-            $build .= '[\'' . $each . '\']';
+        $value = $LANG;
+
+        foreach ($params as $param) {
+            if (isset($value[$param])) {
+                $value = $value[$param];
+            } else {
+                return false;
+            }
         }
-        $build = '$LANG' . $build . ';';
-        @eval('$build = ' . $build . ';');
-        if( empty($build) or !$build ) {
+
+        if (empty($value)) {
             return false;
         } else {
 
@@ -153,7 +157,7 @@ class Tango_Core
                 $f[] = '%' . $par . '%';
             }
 
-            $return = str_replace($f, $replace, $build);
+            $return = str_replace($f, $replace, $value);
             return $return;
 
         }
