@@ -17,7 +17,7 @@ class Library_PermGET
     /*
      * Basic configuration.
      */
-    public function _construct()
+    public function __construct()
     {
         $this->file = $_SERVER['REQUEST_URI'];
     }

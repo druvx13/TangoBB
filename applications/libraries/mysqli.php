@@ -321,6 +321,9 @@ class MysqliDB
             case 'double':
                 return 'd';
                 break;
+            default:
+                return 's';
+                break;
         }
     }
 

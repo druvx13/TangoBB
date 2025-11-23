@@ -329,7 +329,11 @@ class NekoGD
     public function __destruct()
     {
         if (!empty($this->product) and !empty($this->mime)) {
-            imagedestroy($this->product);
+            // PHP 8 automatically handles resource destruction, but we keep this for older versions
+            // and check if it's a resource or object to be safe.
+            if (is_resource($this->product) || (is_object($this->product) && $this->product instanceof GdImage)) {
+                 imagedestroy($this->product);
+            }
         }
     }
 

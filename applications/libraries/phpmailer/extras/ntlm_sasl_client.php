@@ -23,15 +23,13 @@ class ntlm_sasl_client_class
 
     Function Initialize(&$client)
     {
-        if (!function_exists($function = "mcrypt_encrypt")
-            || !function_exists($function = "mhash")
-        ) {
-            $extensions = array(
-                "mcrypt_encrypt" => "mcrypt",
-                "mhash" => "mhash"
-            );
-            $client->error = "the extension " . $extensions[$function] . " required by the NTLM SASL client class is not available in this PHP configuration";
+        if (!function_exists("openssl_encrypt") && !function_exists("mcrypt_encrypt")) {
+            $client->error = "the extension mcrypt or openssl required by the NTLM SASL client class is not available in this PHP configuration";
             return (0);
+        }
+        if (!function_exists("hash") && !function_exists("mhash")) {
+             $client->error = "the extension hash or mhash required by the NTLM SASL client class is not available in this PHP configuration";
+             return (0);
         }
         return (1);
     }
@@ -67,10 +65,13 @@ class ntlm_sasl_client_class
     Function NTLMResponse($challenge, $password)
     {
         $unicode = $this->ASCIIToUnicode($password);
-        $md4 = mhash(MHASH_MD4, $unicode);
+        if (function_exists('hash')) {
+            $md4 = hash('md4', $unicode, true);
+        } else {
+            $md4 = mhash(MHASH_MD4, $unicode);
+        }
         $padded = $md4 . str_repeat(chr(0), 21 - strlen($md4));
-        $iv_size = mcrypt_get_iv_size(MCRYPT_DES, MCRYPT_MODE_ECB);
-        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+
         for ($response = "", $third = 0; $third < 21; $third += 7) {
             for ($packed = "", $p = $third; $p < $third + 7; $p++)
                 $packed .= str_pad(decbin(ord(substr($padded, $p, 1))), 8, "0", STR_PAD_LEFT);
@@ -79,7 +80,14 @@ class ntlm_sasl_client_class
                 $b = $s . ((substr_count($s, "1") % 2) ? "0" : "1");
                 $key .= chr(bindec($b));
             }
-            $ciphertext = mcrypt_encrypt(MCRYPT_DES, $key, $challenge, MCRYPT_MODE_ECB, $iv);
+
+            if (function_exists('openssl_encrypt')) {
+                $ciphertext = openssl_encrypt($challenge, 'DES-ECB', $key, OPENSSL_RAW_DATA | OPENSSL_NO_PADDING);
+            } else {
+                $iv_size = mcrypt_get_iv_size(MCRYPT_DES, MCRYPT_MODE_ECB);
+                $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+                $ciphertext = mcrypt_encrypt(MCRYPT_DES, $key, $challenge, MCRYPT_MODE_ECB, $iv);
+            }
             $response .= $ciphertext;
         }
         return $response;

@@ -191,9 +191,17 @@ function randomHexBytes($length)
 {
     $raw_bytes = '';
 
-    if (function_exists('openssl_random_pseudo_bytes')) {
+    if (function_exists('random_bytes')) {
+        try {
+            $raw_bytes = random_bytes($length);
+        } catch (Exception $e) {
+            // Fallback
+        }
+    }
+
+    if (empty($raw_bytes) && function_exists('openssl_random_pseudo_bytes')) {
         $raw_bytes = openssl_random_pseudo_bytes($length);
-    } elseif (function_exists('mcrypt_create_iv')) {
+    } elseif (empty($raw_bytes) && function_exists('mcrypt_create_iv')) {
         $raw_bytes = mcrypt_create_iv($length, MCRYPT_DEV_URANDOM);
     } else {
         $urandom = @fopen('/dev/urandom', 'rb');
