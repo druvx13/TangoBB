@@ -398,7 +398,7 @@ if ($PGET->s(true)) {
                     $user_joined['time'],
                     $user['post_count'],
                     $poll,
-                    $TANGO->lib_parse->parse($query['0']['post_content']),
+                    $TANGO->hook->apply_filters('thread_content', $TANGO->lib_parse->parse($query['0']['post_content']), array($query['0']['id'])),
                     $TANGO->lib_parse->parse($user['user_signature']),
                     $time_post['time'],
                     $thread_mod_tools,

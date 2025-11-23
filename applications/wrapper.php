@@ -97,6 +97,10 @@ if (!defined('Install')) {
     require_once(PATH_A . CLA . 'core.php');
     $TANGO = new Tango_Core();
 
+    //Hooks
+    require_once(PATH_A . LIB . 'hooks.php');
+    $TANGO->hook = new Tango_Hooks();
+
     //Captcha
     require_once(PATH_A . LIB . 'captcha.php');
     $TANGO->captcha = new TangoBB_Captcha();

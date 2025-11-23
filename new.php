@@ -213,6 +213,9 @@ if ($PGET->g('node')) {
                         foreach ($community as $user) {
                             $TANGO->node->thread_mark_unread($tid['0']['id'], $user['id'], '0');
                         }
+
+                        $TANGO->hook->do_action('after_thread_create', array($tid['0']['id']));
+
                         redirect(SITE_URL . '/thread.php/' . $friendly_url . '.' . $tid['0']['id']);
 
                     } catch (mysqli_sql_exception $e) {
