@@ -301,15 +301,57 @@ if ($PGET->g('node')) {
                 $icon_package['plants']
             )
         );
-        $content .= $TANGO->tpl->entity(
-            'thread_options',
-            array(
-                'misc'
-            ),
-            array(
-                $TANGO->hook->apply_filters('thread_options_misc', '')
-            )
-        );
+
+        // Manual construction of thread_options to bypass DB template limits
+        $attachment_content = $TANGO->hook->apply_filters('thread_options_misc', '');
+
+        $thread_options_html = '<script>
+var field = 3;
+var counter = 1;
+var i = 3;
+function plus() {
+  var content = new Array();
+    field++;
+    for (counter = 3; counter < (field-1); counter++) {
+        content[counter] = document.getElementById("answer_" + counter).value;
+    }
+    document.getElementById("dynamic").innerHTML = "";
+    for (i = 3; i < field; i++) {
+        if (typeof(content[i]) == "undefined")
+        {
+            content[i] ="";
+        }
+        document.getElementById("dynamic").innerHTML +=
+   "<label for=\'answer_" + i + "\'>" + i + ". Answer</label><input type=\'text\' value=\'" + content[i] + "\' name=\'answer_" + i + "\' id=\'answer_" + i + "\'  />";
+    }
+}
+</script>
+<br/>
+<ul class="nav nav-tabs">
+    <li class="active"><a href="#polls" data-toggle="tab">Polls</a></li>
+    <li><a href="#attachments" data-toggle="tab">Attachments</a></li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane active" id="polls">
+         <div class="col-md-6">
+             <label for="question">Question</label>
+             <input type="text" name="question" />
+             <label for="answer_1">1. Answer</label>
+             <input type="text" name="answer_1" id="answer_1" />
+             <label for="answer_2">2. Answer</label>
+             <input type="text" name="answer_2" id="answer_2" />
+             <div id="dynamic">
+             </div>
+             <span href="" onClick="plus();"> Add an answer field </span>
+         </div>
+    </div>
+    <div class="tab-pane" id="attachments">
+        ' . $attachment_content . '
+    </div>
+</div>
+</form>';
+
+        $content .= $thread_options_html;
 
 
         $TANGO->tpl->addParam(
