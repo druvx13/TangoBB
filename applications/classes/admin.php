@@ -14,26 +14,27 @@ class Tango_Admin
 
     public function __construct()
     {
+        global $LANG;
         //Adding default navigation for ACP.
         $this->addNav(
-            'Configuration',
+            $LANG['admin']['configuration'],
             array(
-                'General' => SITE_URL . '/admin/general.php',
-                'Extensions' => SITE_URL . '/admin/extensions.php'
+                $LANG['admin']['general'] => SITE_URL . '/admin/general.php',
+                $LANG['admin']['extensions'] => SITE_URL . '/admin/extensions.php'
             )
         );
         $this->addNav(
-            'Forum',
+            $LANG['admin']['forum'],
             array(
-                'Manage Categories' => SITE_URL . '/admin/manage_category.php',
-                'Manage Nodes' => SITE_URL . '/admin/manage_node.php'
+                $LANG['admin']['manage_categories'] => SITE_URL . '/admin/manage_category.php',
+                $LANG['admin']['manage_nodes'] => SITE_URL . '/admin/manage_node.php'
             )
         );
         $this->addNav(
-            'Customization',
+            $LANG['admin']['customization'],
             array(
-                'Usergroups' => SITE_URL . '/admin/usergroups.php',
-                'Theme' => SITE_URL . '/admin/theme.php'
+                $LANG['admin']['usergroups'] => SITE_URL . '/admin/usergroups.php',
+                $LANG['admin']['theme'] => SITE_URL . '/admin/theme.php'
             )
         );
     }

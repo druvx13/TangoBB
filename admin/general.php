@@ -127,11 +127,11 @@ if (isset($_POST['update'])) {
                                                             flat_ui_admin = :flat_ui_admin
                                                             WHERE id = 1');
                 $notice .= $ADMIN->alert(
-                    'Informations saved!',
+                    $LANG['admin']['save_success'],
                     'success'
                 );
             } catch (mysqli_sql_exception $e) {
-                throw new Exception ('Error saving information. Try again later.');
+                throw new Exception ($LANG['admin']['save_error']);
             }
 
         }
@@ -152,68 +152,68 @@ $reg_check    = ($TANGO->data['register_enable'] == 1) ? ' CHECKED' : '';
 $merge_check  = ($TANGO->data['post_merge'] == 1) ? ' CHECKED' : '';
 $flatui_check = ($TANGO->data['flat_ui_admin'])? 'CHECKED' : '';
 echo $ADMIN->box(
-    'General Settings',
+    $LANG['admin']['general_settings'],
     $notice .
     '<input type="hidden" name="csrf_token" value="' . $token . '">
-       <label for="site_name">Board Name</label>
+       <label for="site_name">' . $LANG['admin']['board_name'] . '</label>
        <input type="text" class="form-control" name="site_name" id="site_name" value="' . $TANGO->data['site_name'] . '" />
-       <label for="board_email">Board Email</label>
+       <label for="board_email">' . $LANG['admin']['board_email'] . '</label>
        <input type="text" class="form-control" name="board_email" id="board_email" value="' . $TANGO->data['site_email'] . '" />
-       <label for="number_subs">Number of shown subforums</label>
+       <label for="number_subs">' . $LANG['admin']['shown_subforums'] . '</label>
        <input type="text" class="form-control" name="number_subs" id="number_subs" value="' . $TANGO->data['number_subs'] . '" />
-       <input type="checkbox" name="register_enable" value="1" id="reg_enable" ' . $reg_check . ' /> <label for="reg_enable">Enable Register</label><br />
-       <input type="checkbox" name="post_merge" value="1" id="post_merge" ' . $merge_check . ' /> <label for="post_merge">Merge Posts (<a href="#" title="Merge consecutive posts by the same user." id="tooltip">?</a>)</label><br />
-       <input type="checkbox" name="flatui_enable" value="1" id="flatui_enable" ' . $flatui_check . ' /> <label for="flatui_enable">Enable Flat UI for ACP (<a href="#" title="Use the old FlatUI interface on the administration panel." id="tooltip">?</a>)</label><br />
+       <input type="checkbox" name="register_enable" value="1" id="reg_enable" ' . $reg_check . ' /> <label for="reg_enable">' . $LANG['admin']['enable_register'] . '</label><br />
+       <input type="checkbox" name="post_merge" value="1" id="post_merge" ' . $merge_check . ' /> <label for="post_merge">' . $LANG['admin']['merge_posts'] . ' (<a href="#" title="' . $LANG['admin']['merge_posts_tooltip'] . '" id="tooltip">?</a>)</label><br />
+       <input type="checkbox" name="flatui_enable" value="1" id="flatui_enable" ' . $flatui_check . ' /> <label for="flatui_enable">' . $LANG['admin']['enable_flat_ui'] . ' (<a href="#" title="' . $LANG['admin']['enable_flat_ui_tooltip'] . '" id="tooltip">?</a>)</label><br />
        <br />
-       <label for="default_language">Default Languge</label><br />
+       <label for="default_language">' . $LANG['admin']['default_language'] . '</label><br />
        <select name="default_language" id="Default_language">
        ' . languagePackages() . '
        </select>'
 );
 echo $ADMIN->box(
-    'Forum Rules',
-    'HTML tags will be converted into ascii codes.
+    $LANG['admin']['forum_rules'],
+    $LANG['admin']['forum_rules_message'] . '
      <textarea name="board_rules" class="form-control" style="min-height:250px;">' . $TANGO->data['site_rules'] . '</textarea>'
 );
 
 $recaptcha_check = ($TANGO->data['captcha_type'] == "2") ? ' CHECKED' : '';
 echo $ADMIN->box(
-    'Captcha Settings',
-    'The  public and private keys are <strong>required</strong> for reCaptcha.<br />
-       <label for="rcap_public">reCaptcha Public Key</label>
+    $LANG['admin']['captcha_settings'],
+    $LANG['admin']['captcha_message'] . '<br />
+       <label for="rcap_public">' . $LANG['admin']['recaptcha_public_key'] . '</label>
        <input type="text" name="rcap_public" id="rcap_public" class="form-control" value="' . $TANGO->data['recaptcha_public_key'] . '" />
-       <label for="rcap_private">reCaptcha Private Key</label>
+       <label for="rcap_private">' . $LANG['admin']['recaptcha_private_key'] . '</label>
        <input type="text" name="rcap_private" id="rcap_private" class="form-control" value="' . $TANGO->data['recaptcha_private_key'] . '" />
-       <input type="checkbox" name="enable_recaptcha" value="1"' . $recaptcha_check . ' /> Use reCaptcha'
+       <input type="checkbox" name="enable_recaptcha" value="1"' . $recaptcha_check . ' /> ' . $LANG['admin']['use_recaptcha']
 );
 
 $smtp_check = ($TANGO->data['mail_type'] == 2) ? ' CHECKED' : '';
 echo $ADMIN->box(
-    'SMTP/Email Settings',
-    '<label for="smtp_add">SMTP Address</label>
+    $LANG['admin']['smtp_settings'],
+    '<label for="smtp_add">' . $LANG['admin']['smtp_address'] . '</label>
        <input type="text" name="smtp_add" id="smtp_add" class="form-control" value="' . $TANGO->data['smtp_address'] . '" />
-       <label for="smtp_user">SMTP Username</label>
+       <label for="smtp_user">' . $LANG['admin']['smtp_username'] . '</label>
        <input type="text" name="smtp_user" id="smtp_user" class="form-control" value="' . $TANGO->data['smtp_username'] . '" />
-       <label for="smtp_pass">SMTP Password</label>
+       <label for="smtp_pass">' . $LANG['admin']['smtp_password'] . '</label>
        <input type="text" name="smtp_pass" id="smtp_pass" class="form-control" value="' . $TANGO->data['smtp_password'] . '" />
-       <label for="smtp_port">SMTP Port</label>
+       <label for="smtp_port">' . $LANG['admin']['smtp_port'] . '</label>
        <input type="text" name="smtp_port" id="smtp_port" class="form-control" value="' . $TANGO->data['smtp_port'] . '" />
-       <input type="checkbox" name="enable_smtp" value="1"' . $smtp_check . ' /> Send email using SMTP.'
+       <input type="checkbox" name="enable_smtp" value="1"' . $smtp_check . ' /> ' . $LANG['admin']['send_email_smtp']
 );
 $fb_check = ($TANGO->data['facebook_authenticate'] == 1) ? ' CHECKED' : '';
 echo $ADMIN->box(
-    'Facebook Settings',
-    'The Facebook application ID and secret are <strong>required</strong> for Facebook Authentication.<br />
-       <label for="fb_app_id">Facebook App ID</label>
+    $LANG['admin']['facebook_settings'],
+    $LANG['admin']['facebook_message'] . '<br />
+       <label for="fb_app_id">' . $LANG['admin']['facebook_app_id'] . '</label>
        <input type="text" name="fb_app_id" id="fb_app_id" class="form-control" value="' . $TANGO->data['facebook_app_id'] . '" />
-       <label for="fb_app_secret">Facebook App Secret</label>
+       <label for="fb_app_secret">' . $LANG['admin']['facebook_app_secret'] . '</label>
        <input type="text" name="fb_app_secret" id="fb_app_secret" class="form-control" value="' . $TANGO->data['facebook_app_secret'] . '" />
-       <input type="checkbox" name="enable_facebook" value="1"' . $fb_check . ' /> Enable Facebook Authentication'
+       <input type="checkbox" name="enable_facebook" value="1"' . $fb_check . ' /> ' . $LANG['admin']['enable_facebook_auth']
 );
 
 echo $ADMIN->box(
     null,
-    '<input type="submit" name="update" class="btn btn-default" value="Save Settings" />'
+    '<input type="submit" name="update" class="btn btn-default" value="' . $LANG['admin']['save_settings'] . '" />'
 );
 
 echo '</form>';
